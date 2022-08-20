@@ -1,5 +1,6 @@
 body {
-  padding: 50px;
+  padding: 0;
+  margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -9,4 +10,15 @@ a {
 
 h1 {
   color: 15px;
+}
+#navbar {
+  background-color: rgb(246, 189, 119);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.room-image {
+  height: 400px;
 }

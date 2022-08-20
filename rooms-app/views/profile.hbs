@@ -1,1 +1,11 @@
-<h1>Welcome</h1>
+<h1>Welcome {{profileUser.userName}}</h1>
+
+<h6><a href="/auth/create-room">Create a Room</a></h6>
+
+{{#each currentRooms}}
+  <div>
+    <h3>{{this.name}}</h3>
+    <img src="{{this.imageUrl}}" alt="room" class="room-image" />
+    <h6>{{this.description}}</h6>
+  </div>
+{{/each}}

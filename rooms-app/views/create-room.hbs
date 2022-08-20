@@ -1,0 +1,11 @@
+<h1>Create a Room</h1>
+<form action="/auth/create-room" method="POST">
+  <label>Room Name:</label>
+  <input type="text" name="name" required />
+  <label>Descriptioni:</label>
+  <input type="text" name="description" required />
+  <label>Image Url:</label>
+  <input type="text" name="imageUrl" required />
+  <input type="text" name="owner" value="{{currentUser._id}}" hidden />
+  <button type="submit">Create</button>
+</form>

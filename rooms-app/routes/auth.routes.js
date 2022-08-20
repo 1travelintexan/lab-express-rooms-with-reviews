@@ -1,15 +1,16 @@
 const router = require("express").Router();
+const { isLoggedIn, isLoggedOut } = require("../middlewares/auth.middlewares");
 
 const UserModel = require("../models/User.model");
+const RoomModel = require("../models/Room.model");
 const bcrypt = require("bcryptjs");
-const { rawListeners } = require("../app");
 const saltRounds = 12;
 
 router.get("/signup", (req, res) => {
   res.render("signup");
 });
 
-router.get("/login", (req, res) => {
+router.get("/login", isLoggedOut, (req, res) => {
   res.render("login");
 });
 
@@ -24,9 +25,6 @@ router.post("/signup", async (req, res) => {
     password: passwordHash,
   };
   await UserModel.create(newUserObj);
-  //   //remove the hashed password from the DB user
-  //   newUserDB.password = "****";
-  //   req.session.currentUser = newUserDB;
   res.redirect("/auth/login");
 });
 
@@ -59,9 +57,27 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/profile", (req, res) => {
-  console.log("from profile", req.session);
-  res.render("profile");
+router.get("/profile", isLoggedIn, async (req, res) => {
+  const profileUser = req.session.currentUser;
+  const currentRooms = await RoomModel.find();
+  res.render("profile", { profileUser, currentRooms });
+});
+
+//<=============Start creating rooms here==============>
+router.get("/create-room", (req, res) => {
+  const currentUser = req.session.currentUser;
+  console.log("from create room", currentUser);
+  res.render("create-room", { currentUser });
+});
+
+router.post("/create-room", async (req, res) => {
+  const newRoom = await RoomModel.create(req.body);
+  res.redirect("/auth/profile");
+});
+
+router.get("/logout", isLoggedIn, (req, res) => {
+  req.session.destroy();
+  res.redirect("/auth/login");
 });
 
 module.exports = router;
