@@ -59,25 +59,30 @@ router.post("/login", async (req, res) => {
 
 router.get("/profile", isLoggedIn, async (req, res) => {
   const profileUser = req.session.currentUser;
-  const currentRooms = await RoomModel.find();
+  const currentRooms = await RoomModel.find().populate("owner");
+  await currentRooms.map((elem) => {
+    if (profileUser._id.toString() === elem.owner._id.toString()) {
+      elem.isOwner = true;
+    }
+  });
+  console.log("current rooms", currentRooms);
   res.render("profile", { profileUser, currentRooms });
 });
 
 //<=============Start creating rooms here==============>
 router.get("/create-room", (req, res) => {
   const currentUser = req.session.currentUser;
-  console.log("from create room", currentUser);
   res.render("create-room", { currentUser });
 });
 
 router.post("/create-room", async (req, res) => {
-  const newRoom = await RoomModel.create(req.body);
+  const newRoom = await RoomModel.create({ ...req.body, isOwner: false });
   res.redirect("/auth/profile");
 });
 
 router.get("/logout", isLoggedIn, (req, res) => {
   req.session.destroy();
-  res.redirect("/auth/login");
+  res.redirect("/");
 });
 
 module.exports = router;
