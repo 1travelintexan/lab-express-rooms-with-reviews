@@ -10,7 +10,7 @@
   </div>
 
   {{#if this.isOwner}}
-    <button>Delete</button>
-    <button>Edit</button>
+    <button><a href="/auth/delete/{{this._id}}">Delete</a></button>
+    <button><a href="/auth/edit/{{this._id}}">Edit</a></button>
   {{/if}}
 {{/each}}

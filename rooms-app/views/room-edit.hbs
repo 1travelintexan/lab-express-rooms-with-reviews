@@ -1,0 +1,15 @@
+<h1>Update your Room</h1>
+<form action="/auth/edit/{{roomToEdit._id}}" method="POST">
+  <label>Room Name:</label>
+  <input type="text" name="name" value="{{roomToEdit.name}}" required />
+  <label>Description:</label>
+  <input
+    type="text"
+    name="description"
+    value="{{roomToEdit.description}}"
+    required
+  />
+  <label>Image Url:</label>
+  <input type="text" name="imageUrl" value="{{roomToEdit.imageUrl}}" required />
+  <button type="submit">Update</button>
+</form>

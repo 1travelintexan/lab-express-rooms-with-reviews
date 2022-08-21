@@ -60,12 +60,12 @@ router.post("/login", async (req, res) => {
 router.get("/profile", isLoggedIn, async (req, res) => {
   const profileUser = req.session.currentUser;
   const currentRooms = await RoomModel.find().populate("owner");
+  //change is owner to true for rooms that match the session user. to show buttons on hbs file
   await currentRooms.map((elem) => {
     if (profileUser._id.toString() === elem.owner._id.toString()) {
       elem.isOwner = true;
     }
   });
-  console.log("current rooms", currentRooms);
   res.render("profile", { profileUser, currentRooms });
 });
 
@@ -76,7 +76,37 @@ router.get("/create-room", (req, res) => {
 });
 
 router.post("/create-room", async (req, res) => {
-  const newRoom = await RoomModel.create({ ...req.body, isOwner: false });
+  await RoomModel.create({ ...req.body, isOwner: false });
+  res.redirect("/auth/profile");
+});
+
+router.get("/edit/:roomId", async (req, res) => {
+  const { roomId } = req.params;
+  const roomToEdit = await RoomModel.findById(roomId);
+  res.render("room-edit", { roomToEdit });
+});
+
+router.post("/edit/:roomId", async (req, res) => {
+  const { roomId } = req.params;
+  const { name, description, imageUrl } = req.body;
+  const { owner } = req.session;
+  await RoomModel.findByIdAndUpdate(
+    roomId,
+    {
+      name,
+      description,
+      imageUrl,
+      owner,
+      isOwner: false,
+    },
+    { new: true }
+  );
+  res.redirect("/auth/profile");
+});
+
+router.get("/delete/:roomId", async (req, res) => {
+  const { roomId } = req.params;
+  await RoomModel.findByIdAndDelete(roomId);
   res.redirect("/auth/profile");
 });
 
