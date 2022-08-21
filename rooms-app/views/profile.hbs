@@ -1,14 +1,21 @@
 <h1>Welcome {{profileUser.userName}}</h1>
-
 <h3><a href="/auth/create-room">Create a Room</a></h3>
-
 {{#each currentRooms}}
   <div>
     <h3>{{this.name}} posted by: {{this.owner.userName}}</h3>
     <img src="{{this.imageUrl}}" alt="room" class="room-image" />
-    <h6>{{this.description}}</h6>
-  </div>
+    <h6>Description: {{this.description}}</h6>
+    {{#each this.reviews}}
+      <h6>Reviews: {{this.comment}}</h6>
+    {{/each}}
 
+    <form action="/auth/comment/{{this._id}}" method="POST">
+      <label>Comment on this room:</label>
+      <input type="textarea" name="comment" />
+      <input name="reviewOwner" value="{{this.owner._id}}" hidden />
+      <button>Comment</button>
+    </form>
+  </div>
   {{#if this.isOwner}}
     <button><a href="/auth/delete/{{this._id}}">Delete</a></button>
     <button><a href="/auth/edit/{{this._id}}">Edit</a></button>

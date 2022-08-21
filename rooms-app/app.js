@@ -35,7 +35,7 @@ app.use(
   require("express-session")({
     secret: process.env.secret_sess,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+      maxAge: 1000 * 60 * 60, // 1 hours
     },
     store: store,
     resave: true,

@@ -1,9 +1,9 @@
 const { model, Schema } = require("mongoose");
 
 const reviewSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User" },
+  reviewOwner: { type: Schema.Types.ObjectId, ref: "User" },
   comment: { type: String, maxlength: 200 },
 });
 
-const ReviewModel = model("review", reviewSchema);
+const ReviewModel = model("Review", reviewSchema);
 module.exports = ReviewModel;
