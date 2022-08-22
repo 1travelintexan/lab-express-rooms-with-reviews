@@ -6,6 +6,7 @@ const RoomModel = require("../models/Room.model");
 const ReviewModel = require("../models/Review.model");
 
 const bcrypt = require("bcryptjs");
+const { model } = require("mongoose");
 const saltRounds = 12;
 
 router.get("/signup", (req, res) => {
@@ -61,26 +62,25 @@ router.post("/login", async (req, res) => {
 
 router.get("/profile", isLoggedIn, async (req, res) => {
   const profileUser = req.session.currentUser;
+  profileUser._id = req.session.currentUser._id.toString();
 
   //get all the rooms to show on profile page
-  const currentRooms = await RoomModel.find().populate("owner reviews");
+  const currentRooms = await RoomModel.find()
+    .populate("owner reviews")
+    .populate({
+      path: "reviews",
+      populate: {
+        path: "reviewOwner", //populate the review owner within the review model
+        model: "User",
+      },
+    });
+
   //change is owner to true for rooms that match the session user. to show buttons on hbs file
   await currentRooms.map((elem) => {
     if (profileUser._id.toString() === elem.owner._id.toString()) {
       elem.isOwner = true;
     }
   });
-  for (let i = 0; i < currentRooms.length; i++) {
-    let reviews = currentRooms[i].reviews;
-    for (let j = 0; j < reviews.length; j++) {
-      await reviews[j].populate("reviewOwner");
-      // let foundReviewOwner = await UserModel.findById(reviews[i].reviewOwner);
-      // reviews[i].__v = foundReviewOwner.userName;
-    }
-
-    console.log("heres the owner", reviews);
-  }
-  //console.log("profile", currentRooms[0].reviews);
 
   res.render("profile", { profileUser, currentRooms });
 });
@@ -129,7 +129,8 @@ router.get("/delete/:roomId", async (req, res) => {
 //comments routes
 router.post("/comment/:roomId", async (req, res) => {
   const { roomId } = req.params;
-  let newReview = await ReviewModel.create(req.body);
+  const { _id } = req.session.currentUser;
+  let newReview = await ReviewModel.create({ ...req.body, reviewOwner: _id });
   await RoomModel.findByIdAndUpdate(roomId, {
     $push: { reviews: [newReview._id] },
   });
