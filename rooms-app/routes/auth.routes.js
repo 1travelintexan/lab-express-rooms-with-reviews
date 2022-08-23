@@ -24,7 +24,7 @@ router.post("/signup", async (req, res) => {
 
   const newUserObj = {
     email,
-    userName,
+    username,
     password: passwordHash,
   };
   await UserModel.create(newUserObj);
