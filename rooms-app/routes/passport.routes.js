@@ -2,6 +2,7 @@ const router = require("express").Router();
 const UserModel = require("../models/User.model");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const { route } = require("./index.routes");
 
 //signup with passport routes
 router.get("/signup", (req, res) => {
@@ -67,6 +68,12 @@ router.get("/private-page", (req, res) => {
     return;
   }
   //req.user is defined then render the profile page and send the user object
-  res.render("profile", { user: req.user });
+  res.redirect("/passport/profile");
+});
+
+router.get("/profile", (req, res) => {
+  console.log("passport profile", req);
+  let passportUser = req.user;
+  res.render("passport/profile", { passportUser });
 });
 module.exports = router;

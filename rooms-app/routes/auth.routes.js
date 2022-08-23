@@ -60,7 +60,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/profile", isLoggedIn, async (req, res) => {
+router.get("/profile", async (req, res) => {
   const profileUser = req.session.currentUser;
   profileUser._id = req.session.currentUser._id.toString();
 
