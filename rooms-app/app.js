@@ -28,48 +28,48 @@ app.use(
   })
 );
 
-//Passport set up
-const UserModel = require("./models/User.model");
-const bcrypt = require("bcryptjs");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+// //Passport set up
+// const UserModel = require("./models/User.model");
+// const bcrypt = require("bcryptjs");
+// const passport = require("passport");
+// const LocalStrategy = require("passport-local").Strategy;
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-// Passport serialize
-passport.serializeUser((user, callback) => {
-  callback(null, user._id);
-});
+// // Passport serialize
+// passport.serializeUser((user, callback) => {
+//   callback(null, user._id);
+// });
 
-// Passport deserialize
-passport.deserializeUser((id, callback) => {
-  UserModel.findById(id)
-    .then((user) => callback(null, user))
-    .catch((err) => callback(err));
-});
+// // Passport deserialize
+// passport.deserializeUser((id, callback) => {
+//   UserModel.findById(id)
+//     .then((user) => callback(null, user))
+//     .catch((err) => callback(err));
+// });
 
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "username", // by default
-      passwordField: "password", // by default
-    },
-    (username, password, done) => {
-      UserModel.findOne({ username })
-        .then((user) => {
-          if (!user) {
-            return done(null, false, { message: "Incorrect username" });
-          }
-          if (!bcrypt.compareSync(password, user.password)) {
-            return done(null, false, { message: "Incorrect password" });
-          }
-          done(null, user);
-        })
-        .catch((err) => done(err));
-    }
-  )
-);
+// passport.use(
+//   new LocalStrategy(
+//     {
+//       usernameField: "username", // by default
+//       passwordField: "password", // by default
+//     },
+//     (username, password, done) => {
+//       UserModel.findOne({ username })
+//         .then((user) => {
+//           if (!user) {
+//             return done(null, false, { message: "Incorrect username" });
+//           }
+//           if (!bcrypt.compareSync(password, user.password)) {
+//             return done(null, false, { message: "Incorrect password" });
+//           }
+//           done(null, user);
+//         })
+//         .catch((err) => done(err));
+//     }
+//   )
+// );
 
 // default value for title local
 const capitalized = require("./utils/capitalized");

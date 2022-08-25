@@ -18,7 +18,7 @@ router.get("/login", isLoggedOut, (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const { email, userName, password } = req.body;
+  const { email, username, password } = req.body;
   const salt = await bcrypt.genSalt(saltRounds);
   const passwordHash = await bcrypt.hash(password, salt);
 
@@ -61,6 +61,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/profile", async (req, res) => {
+  console.log(req.session);
   const profileUser = req.session.currentUser;
   profileUser._id = req.session.currentUser._id.toString();
 
